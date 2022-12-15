@@ -1,4 +1,5 @@
 from socket import socket
+import threading
 from random import choice
 
 
@@ -21,8 +22,11 @@ def handle_word(input_word, correct_word):
 
     return check_dict
 
+def client_handle(client_listen, client_send):
+    while True:
+        pass
 
-def word_generate():
+def library_generate():
     return choice(['hello', 'start', 'world', 'begin', 'digit', 'joker', 'width', 'alpha', 'gamer'])
 
 
@@ -32,7 +36,13 @@ def main():
     server.listen()
     server_on = True
 
-    client, adress = server.accept()
+    clients = []
+    for i in range(2):
+        client, adress = server.accept()
+        clients.append(client)
+
+    threading.Thread(target=client_handle, args=(clients[0], clients[1],)).start()
+    threading.Thread(target=client_handle, args=(clients[1], clients[0],)).start()
 
     game_on = True
 
